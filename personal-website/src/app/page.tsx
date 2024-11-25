@@ -68,7 +68,8 @@ const HomePage = () => {
           <div className="w-48 h-48 md:w-64 md:h-64 relative animate-fade-in-delayed">
             <div className="w-full h-full rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 overflow-hidden">
               <img
-                src="/images/personal_logo.webp"
+                // src="/images/personal_logo.webp"
+                src="/images/personal_logo_2.webp"
                 alt="Ashwin Kumar M V"
                 className="w-full h-full object-cover"
               />

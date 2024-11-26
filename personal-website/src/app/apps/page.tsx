@@ -1,6 +1,8 @@
-﻿// src/app/apps/page.tsx
+// src/app/apps/page.tsx
+'use client';
+
 import Link from 'next/link';
-import { LockIcon, ShieldIcon, UsersIcon, SparklesIcon } from '@/components/icons';
+import { ShieldIcon, UsersIcon, SparklesIcon, LockIcon, UnlockIcon } from '@/components/icons';
 import './styles.css';
 
 interface AppCategory {
@@ -97,10 +99,21 @@ const apps: AppCategory[] = [
   }
 ];
 
-function AppCard({ app }: { app: AppCategory['apps'][0] }) {
+interface AppCardProps {
+  app: {
+    title: string;
+    description: string;
+    slug: string;
+    tech: string[];
+    status: 'live' | 'beta' | 'coming-soon';
+    requiresAuth: boolean;
+  };
+}
+
+const AppCard: React.FC<AppCardProps> = ({ app }) => {
   return (
     <Link
-      href={`/apps/${app.slug}`}
+      href={`/apps/${ app.requiresAuth ? 'auth/' : 'open/' }${app.slug}`}
       className="group block p-6 bg-white rounded-xl border border-neutral-200 hover:border-neutral-300 transition-all duration-300 hover:-translate-y-1"
     >
       <div className="flex justify-between items-start mb-4">
@@ -108,13 +121,11 @@ function AppCard({ app }: { app: AppCategory['apps'][0] }) {
           <h3 className="text-xl text-neutral-800 group-hover:text-neutral-600 transition-colors duration-300">
             {app.title}
           </h3>
-          {app.requiresAuth ? (
-            <div className="tooltip-wrapper" title="Requires authentication">
+          <div className="tooltip-wrapper" title={app.requiresAuth ? "Requires authentication" : "Free to use"}>
+            {app.requiresAuth && (
               <LockIcon className="text-neutral-400 group-hover:text-neutral-600" />
-            </div>
-          ) : (
-            null
-          )}
+            )}
+          </div>
         </div>
         <span className={`
           px-2 py-1 text-xs rounded-full
@@ -127,7 +138,7 @@ function AppCard({ app }: { app: AppCategory['apps'][0] }) {
       </div>
       <p className="text-neutral-600 mb-4">{app.description}</p>
       <div className="flex flex-wrap gap-2">
-        {app.tech.map((tech) => (
+        {app.tech.map((tech: string) => (
           <span
             key={tech}
             className="px-3 py-1 bg-neutral-50 rounded-full text-sm text-neutral-600"
@@ -138,9 +149,9 @@ function AppCard({ app }: { app: AppCategory['apps'][0] }) {
       </div>
     </Link>
   );
-}
+};
 
-export default function AppsPage() {
+const AppsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50">
       <section className="max-w-4xl mx-auto px-4 pt-24 pb-16">
@@ -151,8 +162,10 @@ export default function AppsPage() {
               A collection of tools and applications built with modern web technologies.
             </span>
           </h1>
-          <p className="text-lg text-neutral-600 leading-relaxed">
-            Look for the <LockIcon className="inline mx-1" /> icon to identify apps that require authentication.
+          <p className="text-lg text-neutral-600 leading-relaxed flex items-center gap-2">
+            Look for the 
+            <LockIcon className="text-neutral-600" />
+            icon to identify apps that require authentication.
           </p>
         </div>
       </section>
@@ -162,7 +175,7 @@ export default function AppsPage() {
           {apps.map((category, idx) => (
             <section key={idx} className="border-t border-neutral-200 pt-16">
               <div className="flex items-center gap-3 mb-8">
-                <category.icon size={24} className="text-neutral-600" />
+                <category.icon className="w-10 h-10 text-neutral-500" />
                 <h2 className="text-2xl font-light text-neutral-800">
                   {category.title}
                 </h2>
@@ -182,4 +195,6 @@ export default function AppsPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AppsPage;
